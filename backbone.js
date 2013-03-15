@@ -7,15 +7,17 @@
 
 (function(root, factory) {
   // Set up Backbone appropriately for the environment.
-  if (typeof exports !== 'undefined') {
-    // Node/CommonJS, no need for jQuery in that case.
-    factory(root, exports, require('underscore'));
-  } else if (typeof define === 'function' && define.amd) {
-    // AMD
+  if (typeof window !== 'undefined') {
+    // AMD for browser
     define(['underscore', 'jquery', 'exports'], function(_, $, exports) {
       // Export global even in AMD case in case this script is loaded with
       // others that may still expect a global Backbone.
       root.Backbone = factory(root, exports, _, $);
+    });
+  } else if (typeof window === 'undefined' && typeof define === 'function' && define.amd) {
+    // AMD for Node, no need for jQuery in that case.
+    define(['underscore', 'exports'], function (_, exports) {
+      root.Backbone = factory(root, exports, _);
     });
   } else {
     // Browser globals
